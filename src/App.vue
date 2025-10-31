@@ -2,6 +2,9 @@
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png" />
     <HelloWorld msg="Welcome to Your Vue.js App" /> -->
+    <div class="heading">
+      <h1>Departures</h1>
+    </div>
     <section v-if="errored">
       <p>
         Woops! We're not able to retrieve this information. Please try again
@@ -9,12 +12,12 @@
       </p>
     </section>
     <div v-else class="page-group">
-      <section>
+      <section class="table-group">
         <div v-if="loading">Loading...</div>
 
         <table v-else>
-          <caption>
-            <h1>Departures</h1>
+          <caption hidden>
+            Departures Board
           </caption>
           <thead>
             <tr>
@@ -41,66 +44,74 @@
                     : "-"
                 }}
               </td>
-              <td>{{ flight.status }}</td>
+              <td><StatusTag :status="flight.status" /></td>
             </tr>
           </tbody>
         </table>
       </section>
       <section class="form-section">
-        <h2>Edit Flight Status</h2>
-        <form
-          v-on:submit.prevent="
-            updateStatus(selectedFlightNumber, selectedStatus)
-          "
-        >
-          <div class="form-group">
-            <div class="form-fields-group">
-              <label for="flight-select">Select flight:</label>
-              <select
-                name="flight"
-                id="flight-select"
-                v-model="selectedFlightNumber"
+        <div class="form-card">
+          <h2>Edit Flight Status</h2>
+          <form
+            v-on:submit.prevent="
+              updateStatus(selectedFlightNumber, selectedStatus)
+            "
+          >
+            <div class="form-group">
+              <div class="form-fields-group">
+                <div>
+                  <label for="flight-select">Select flight:</label>
+                  <select
+                    name="flight"
+                    id="flight-select"
+                    v-model="selectedFlightNumber"
+                  >
+                    <option disabled value="">Select a flight</option>
+                    <option
+                      v-for="flight in flights"
+                      :key="flight.flightNumber"
+                      :value="flight.flightNumber"
+                    >
+                      {{ formattedTime(flight.scheduledDepartureDateTime) }} -
+                      {{ flight.arrivalAirport.cityName }} ({{
+                        flight.flightNumber
+                      }})
+                    </option>
+                  </select>
+                </div>
+                <div>
+                  <label for="status-select">Flight status:</label>
+                  <select
+                    name="status"
+                    id="status-select"
+                    v-model="selectedStatus"
+                  >
+                    <option disabled value="">Select a new status</option>
+                    <option value="Departed">Departed</option>
+                    <option value="Diverted">Diverted</option>
+                    <option value="Delayed">Delayed</option>
+                    <option value="Cancelled">Cancelled</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <input
+                    v-if="selectedStatus === 'Other'"
+                    id="new-status"
+                    type="text"
+                    v-model="otherText"
+                    placeholder="e.g. Rescheduled"
+                  />
+                </div>
+              </div>
+              <button
+                :disabled="!selectedStatus || !selectedFlightNumber"
+                type="submit"
+                class="submit"
               >
-                <option disabled value="">Select a flight</option>
-                <option
-                  v-for="flight in flights"
-                  :key="flight.flightNumber"
-                  :value="flight.flightNumber"
-                >
-                  {{ formattedTime(flight.scheduledDepartureDateTime) }} -
-                  {{ flight.arrivalAirport.cityName }} ({{
-                    flight.flightNumber
-                  }})
-                </option>
-              </select>
-
-              <label for="status-select">Flight status:</label>
-              <select name="status" id="status-select" v-model="selectedStatus">
-                <option disabled value="">Select a new status</option>
-                <option value="Departed">Departed</option>
-                <option value="Diverted">Diverted</option>
-                <option value="Delayed">Delayed</option>
-                <option value="Cancelled">Cancelled</option>
-                <option value="Other">Other</option>
-              </select>
-
-              <input
-                v-if="selectedStatus === 'Other'"
-                id="new-status"
-                type="text"
-                v-model="otherText"
-                placeholder="e.g. Rescheduled"
-              />
+                Update Status
+              </button>
             </div>
-            <button
-              :disabled="!selectedStatus || !selectedFlightNumber"
-              type="submit"
-              class="submit"
-            >
-              Update Status
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </section>
     </div>
   </div>
@@ -109,12 +120,14 @@
 <script>
 // import HelloWorld from "./components/HelloWorld.vue";
 import axios from "axios";
+import formattedTime from "./helpers/timeHelper";
+import StatusTag from "./components/StatusTag.vue";
 
 export default {
   name: "App",
-  // components: {
-  //   HelloWorld,
-  // },
+  components: {
+    StatusTag,
+  },
   data() {
     return {
       flights: null,
@@ -126,6 +139,7 @@ export default {
     };
   },
   methods: {
+    formattedTime,
     fetchFlights() {
       this.loading = true;
       axios
@@ -141,12 +155,6 @@ export default {
           this.errored = true;
         })
         .finally(() => (this.loading = false));
-    },
-    formattedTime(dateTime) {
-      const date = new Date(dateTime);
-      // const time = date.toTimeString().slice(0, 5);
-      const time = `${date.getHours()}:${("0" + date.getMinutes()).slice(-2)}`;
-      return time;
     },
     updateStatus(selectedFlightNumber, selectedStatus) {
       console.log("flights:", this.flights);
@@ -193,15 +201,22 @@ export default {
   );
 }
 
+.table-group {
+  overflow-y: hidden;
+  overflow-x: auto;
+  width: 100%;
+}
+
 table {
   border-collapse: separate;
   border-spacing: 0px 16px;
-  overflow: hidden;
+  padding: 0px 16px;
   width: 100%;
-  table-layout: fixed;
+  min-width: 500px;
 }
 
-caption {
+.heading {
+  width: 100%;
   padding: 5px;
   text-align: left;
   color: #000000;
@@ -285,37 +300,46 @@ select {
 }
 
 .form-section {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  margin-bottom: 70px;
   width: 100%;
-  height: auto;
-  padding: 30px 45px;
-  background: #fff;
-  border-radius: 10px;
-  color: #000;
-  box-sizing: border-box;
-  margin-bottom: 20px;
+  padding: 16px;
 
-  h2 {
-    margin: 0;
-  }
-
-  .form-group {
+  .form-card {
     display: flex;
     flex-direction: column;
-    gap: 30px;
-
-    .form-fields-group {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      flex-direction: row;
+    gap: 20px;
+    height: auto;
+    padding: 30px 45px;
+    background: #fff;
+    border-radius: 10px;
+    color: #000;
+    box-sizing: border-box;
+    h2 {
+      margin: 0;
     }
-  }
 
-  .submit {
-    align-self: flex-end;
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+
+      .form-fields-group {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        @media (max-width: 400px) {
+          flex-direction: column;
+        }
+      }
+    }
+
+    .submit {
+      align-self: flex-end;
+    }
   }
 }
 </style>
+
