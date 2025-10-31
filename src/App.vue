@@ -76,7 +76,7 @@ export default {
 <style lang="scss">
 #app {
   text-align: left;
-  // font-weight: 600;
+  font-weight: 600;
 }
 
 .heading {
