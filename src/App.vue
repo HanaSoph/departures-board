@@ -118,10 +118,9 @@
 </template>
 
 <script>
-// import HelloWorld from "./components/HelloWorld.vue";
-import axios from "axios";
 import formattedTime from "./helpers/timeHelper";
 import StatusTag from "./components/StatusTag.vue";
+import { fetchFlights } from "./helpers/flightsApi";
 
 export default {
   name: "App",
@@ -140,18 +139,14 @@ export default {
   },
   methods: {
     formattedTime,
-    fetchFlights() {
+    getData() {
       this.loading = true;
-      axios
-        .get(
-          "https://6315ae3e5b85ba9b11e4cb85.mockapi.io/departures/Flightdata"
-        )
+      fetchFlights()
         .then((response) => {
-          this.flights = response.data.allDepartures.slice(0, 10);
-          console.log(this.flights);
+          this.flights = response.slice(0, 10);
         })
         .catch((error) => {
-          console.log(error);
+          console.warn(error);
           this.errored = true;
         })
         .finally(() => (this.loading = false));
@@ -176,16 +171,8 @@ export default {
       }
     },
   },
-  watch: {
-    // selectedStatus(val) {
-    //   console.log("selected status changed:", val);
-    // },
-    // selectedFlightNumber(val) {
-    //   console.log("selectedFlightNumber changed:", val);
-    // },
-  },
   mounted() {
-    this.fetchFlights();
+    this.getData();
   },
 };
 </script>

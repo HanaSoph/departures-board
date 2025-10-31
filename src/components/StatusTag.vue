@@ -4,6 +4,7 @@
 
 <script>
 import { statusColours } from "@/constants/statusColours";
+
 export default {
   name: "StatusTag",
   props: {
