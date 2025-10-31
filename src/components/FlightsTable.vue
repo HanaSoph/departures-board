@@ -24,7 +24,9 @@
           <td>{{ flight.airline.name }}</td>
           <td class="yellow-text">
             {{
-              flight.departureGate?.number ? flight.departureGate.number : "-"
+              flight.departureGate && flight.departureGate.number
+                ? flight.departureGate.number
+                : "-"
             }}
           </td>
           <td><StatusTag :status="flight.status" /></td>

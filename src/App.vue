@@ -48,24 +48,6 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
-    updateStatus(selectedFlightNumber, selectedStatus) {
-      const flight = this.flights.find(
-        (f) => f.flightNumber === selectedFlightNumber
-      );
-
-      if (flight) {
-        if (selectedStatus === "Other") {
-          flight.status = this.otherText;
-        } else {
-          flight.status = selectedStatus;
-        }
-        this.otherText = "";
-        this.selectedFlightNumber = "";
-        this.selectedStatus = "";
-      } else {
-        console.warn("Flight not found", this.selectedFlightNumber);
-      }
-    },
   },
   mounted() {
     this.getData();
