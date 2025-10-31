@@ -1,5 +1,5 @@
 <template>
-  <div class="status-tag color">{{ status }}</div>
+  <div class="status-tag colour">{{ status }}</div>
 </template>
 
 <script>
@@ -12,7 +12,7 @@ export default {
   },
   data() {
     return {
-      color: "green",
+      colour: "",
     };
   },
   methods: {
@@ -23,19 +23,22 @@ export default {
           lowerCaseStatus.includes(keyword)
         )
       ) {
-        this.color = statusColours.yellow;
+        this.colour = statusColours.yellow;
       } else if (lowerCaseStatus.includes("go to gate")) {
-        this.color = statusColours.blue;
+        this.colour = statusColours.blue;
       } else if (lowerCaseStatus.includes("final call")) {
-        this.color = statusColours.red;
+        this.colour = statusColours.red;
       } else if (lowerCaseStatus.includes("departed")) {
-        this.color = statusColours.orange;
+        this.colour = statusColours.orange;
       } else {
-        this.color = statusColours.green;
+        this.colour = statusColours.green;
       }
     },
   },
   mounted() {
+    this.statusColour(this.status);
+  },
+  updated() {
     this.statusColour(this.status);
   },
 };
@@ -49,9 +52,10 @@ export default {
   border-left: solid 10px #0070ee;
   padding: 10px 20px 10px 10px;
   width: max-content;
+  min-width: 130px;
 }
 
-.color {
-  border-left: solid 10px v-bind(color);
+.colour {
+  border-left: solid 10px v-bind(colour);
 }
 </style>

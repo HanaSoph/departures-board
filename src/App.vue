@@ -1,118 +1,118 @@
 <template>
   <div id="app">
-    <!-- <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" /> -->
     <div class="heading">
+      <img src="./assets/plane-take-off.png" />
       <h1>Departures</h1>
     </div>
-    <section v-if="errored">
-      <p>
-        Woops! We're not able to retrieve this information. Please try again
-        later
-      </p>
+    <section v-if="errored" class="error">
+      <p>We're not able to retrieve this information. Please try again later</p>
     </section>
     <div v-else class="page-group">
-      <section class="table-group">
-        <div v-if="loading">Loading...</div>
-
-        <table v-else>
-          <caption hidden>
-            Departures Board
-          </caption>
-          <thead>
-            <tr>
-              <th scope="col">Departure Time</th>
-              <th scope="col">City Name</th>
-              <th scope="col">Code</th>
-              <th scope="col">Airline</th>
-              <th scope="col">Gate</th>
-              <th scope="col">Status</th>
-            </tr>
-          </thead>
-          <tbody v-for="flight in flights" :key="flight.flightNumber">
-            <tr>
-              <td>{{ formattedTime(flight.scheduledDepartureDateTime) }}</td>
-              <td class="yellow-text">
-                {{ flight.arrivalAirport.cityName }}
-              </td>
-              <td>{{ flight.arrivalAirport.code }}</td>
-              <td>{{ flight.airline.name }}</td>
-              <td class="yellow-text">
-                {{
-                  flight.departureGate?.number
-                    ? flight.departureGate.number
-                    : "-"
-                }}
-              </td>
-              <td><StatusTag :status="flight.status" /></td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-      <section class="form-section">
-        <div class="form-card">
-          <h2>Edit Flight Status</h2>
-          <form
-            v-on:submit.prevent="
-              updateStatus(selectedFlightNumber, selectedStatus)
-            "
-          >
-            <div class="form-group">
-              <div class="form-fields-group">
-                <div>
-                  <label for="flight-select">Select flight:</label>
-                  <select
-                    name="flight"
-                    id="flight-select"
-                    v-model="selectedFlightNumber"
-                  >
-                    <option disabled value="">Select a flight</option>
-                    <option
-                      v-for="flight in flights"
-                      :key="flight.flightNumber"
-                      :value="flight.flightNumber"
+      <div class="loading" v-if="loading">Loading...</div>
+      <div v-else>
+        <section class="table-group">
+          <table>
+            <caption hidden>
+              Departures Board
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Departure Time</th>
+                <th scope="col">City Name</th>
+                <th scope="col">Code</th>
+                <th scope="col">Airline</th>
+                <th scope="col">Gate</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody v-for="flight in flights" :key="flight.flightNumber">
+              <tr>
+                <td>{{ formattedTime(flight.scheduledDepartureDateTime) }}</td>
+                <td class="yellow-text">
+                  {{ flight.arrivalAirport.cityName }}
+                </td>
+                <td>{{ flight.arrivalAirport.code }}</td>
+                <td>{{ flight.airline.name }}</td>
+                <td class="yellow-text">
+                  {{
+                    flight.departureGate?.number
+                      ? flight.departureGate.number
+                      : "-"
+                  }}
+                </td>
+                <td><StatusTag :status="flight.status" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+        <section class="form-section">
+          <div class="form-card">
+            <h2>Edit Flight Status</h2>
+            <form
+              v-on:submit.prevent="
+                updateStatus(selectedFlightNumber, selectedStatus)
+              "
+            >
+              <div class="form-group">
+                <div class="form-fields-group">
+                  <div class="field">
+                    <label for="flight-select">Select flight:</label>
+                    <select
+                      name="flight"
+                      id="flight-select"
+                      v-model="selectedFlightNumber"
                     >
-                      {{ formattedTime(flight.scheduledDepartureDateTime) }} -
-                      {{ flight.arrivalAirport.cityName }} ({{
-                        flight.flightNumber
-                      }})
-                    </option>
-                  </select>
+                      <option disabled value="">Select a flight</option>
+                      <option
+                        v-for="flight in flights"
+                        :key="flight.flightNumber"
+                        :value="flight.flightNumber"
+                      >
+                        {{ formattedTime(flight.scheduledDepartureDateTime) }} -
+                        {{ flight.arrivalAirport.cityName }} ({{
+                          flight.flightNumber
+                        }})
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="status-select">Flight status:</label>
+                    <select
+                      name="status"
+                      id="status-select"
+                      v-model="selectedStatus"
+                    >
+                      <option disabled value="">Select a new status</option>
+                      <option value="Departed">Departed</option>
+                      <option value="Diverted">Diverted</option>
+                      <option value="Delayed">Delayed</option>
+                      <option value="Cancelled">Cancelled</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="field" v-if="selectedStatus === 'Other'">
+                    <label for="new-status">Other status:</label>
+                    <input
+                      id="new-status"
+                      type="text"
+                      v-model="otherText"
+                      placeholder="e.g. Rescheduled"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label for="status-select">Flight status:</label>
-                  <select
-                    name="status"
-                    id="status-select"
-                    v-model="selectedStatus"
-                  >
-                    <option disabled value="">Select a new status</option>
-                    <option value="Departed">Departed</option>
-                    <option value="Diverted">Diverted</option>
-                    <option value="Delayed">Delayed</option>
-                    <option value="Cancelled">Cancelled</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  <input
-                    v-if="selectedStatus === 'Other'"
-                    id="new-status"
-                    type="text"
-                    v-model="otherText"
-                    placeholder="e.g. Rescheduled"
-                  />
-                </div>
+                <button
+                  :disabled="!selectedStatus || !selectedFlightNumber"
+                  type="submit"
+                  class="submit"
+                >
+                  Update Status
+                </button>
               </div>
-              <button
-                :disabled="!selectedStatus || !selectedFlightNumber"
-                type="submit"
-                class="submit"
-              >
-                Update Status
-              </button>
-            </div>
-          </form>
-        </div>
-      </section>
+            </form>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
 </template>
@@ -181,30 +181,11 @@ export default {
 #app {
   text-align: left;
   // font-weight: 600;
-  background: linear-gradient(
-    90deg,
-    rgba(60, 60, 60, 1) 0%,
-    rgba(0, 0, 0, 1) 100%
-  );
-}
-
-.table-group {
-  overflow-y: hidden;
-  overflow-x: auto;
-  width: 100%;
-}
-
-table {
-  border-collapse: separate;
-  border-spacing: 0px 16px;
-  padding: 0px 16px;
-  width: 100%;
-  min-width: 500px;
 }
 
 .heading {
   width: 100%;
-  padding: 5px;
+  padding: 5px 5px 5px 40px;
   text-align: left;
   color: #000000;
   background: linear-gradient(
@@ -212,6 +193,13 @@ table {
     rgba(237, 201, 83, 1) 0%,
     rgba(225, 186, 58, 1) 100%
   );
+  display: flex;
+  align-items: center;
+  gap: 30px;
+
+  img {
+    max-height: 50px;
+  }
 }
 
 th {
@@ -274,12 +262,93 @@ select {
   margin-right: 10px;
 }
 
+input[type="text"],
+input[type="number"],
+input[type="email"],
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 12px;
+  line-height: 1.4;
+  color: #333;
+  box-sizing: border-box;
+  height: 38px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+select {
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23333' height='12' viewBox='0 0 24 24' width='12' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  padding-right: 32px;
+}
+
+button {
+  background-color: #fbcf42;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ffd633;
+}
+
+button:focus {
+  outline-color: #007bff;
+}
+
+button:active {
+  background-color: #dfb81e;
+}
+
+button:disabled {
+  background-color: #e6d57e;
+  color: #7c7c7c;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 40px;
+}
+
 .page-group {
   display: flex;
   flex-direction: column;
   max-width: 900px;
   margin: auto;
   align-items: center;
+}
+
+.table-group {
+  overflow-y: hidden;
+  overflow-x: auto;
+  width: 100%;
+
+  table {
+    border-collapse: separate;
+    border-spacing: 0px 16px;
+    padding: 0px 16px;
+    width: 100%;
+    min-width: 500px;
+  }
 }
 
 .yellow-text {
@@ -319,6 +388,12 @@ select {
 
         @media (max-width: 400px) {
           flex-direction: column;
+        }
+
+        .field {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
         }
       }
     }
