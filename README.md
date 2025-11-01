@@ -1,6 +1,4 @@
-# departures-board
-
-# Overview
+# Departures Board - Overview
 
 This project implements a flight Departures board based on the [Figma design](https://www.figma.com/file/Kr6pYxQbIdbfD5wG3Mo6QP/Tech-Test-FID?node-id=2%3A2) and populated using data from the [flights API](https://6315ae3e5b85ba9b11e4cb85.mockapi.io/departures/Flightdata).
 
@@ -36,7 +34,7 @@ npm run test:unit
 npm run lint
 ```
 
-# External Packages
+## External Packages
 
 - Axios — for API requests: Lightweight and easy to integrate with Vue 2.
 
@@ -44,9 +42,9 @@ npm run lint
 
 - Jest + Vue Test Utils — for unit testing: Standard testing stack for Vue 2 projects.
 
-# Features Implemented
+## Features Implemented
 
-## Core Features
+### Core Features
 
 - Single Page App using Vue 2 (Options API) and vanilla JavaScript.
 
@@ -71,7 +69,7 @@ npm run lint
 
   - Shows “Loading…” while fetching flights.
 
-## Optional Enhancements
+### Optional Enhancements
 
 - Arrival Country Display:
 
@@ -96,28 +94,28 @@ npm run lint
   - On data change from the Update Status form: updating the destination would require adding a field to the Edit Status form to update the arrivalAirport.cityName.
   - In the table, visually highlight changes to destination if a flight is diverted, e.g., showing both original destination crossed out and new destination in bold.
 
-## Next steps and Other Potential Enhancements
+### Next steps and Other Potential Enhancements
 
-### Table
+#### Table
 
 - Add pagination to the table to minimise scroll and to help with load (if loading per page)
 - On small screen, update airline column to use airline.code
 
-### Edit Status & Form
+#### Edit Status & Form
 
 - Could add an edit button next to each flight, which would reveal the Edit Status form in a modal
 - Frontend form validation to display errors
 
-### Testing
+#### Testing
 
 - Test to check if the error message displays
 
-### Other
+#### Other
 
 - In the data, departure time was sometimes different to the status times - could add a check in for this to display something to let users know their flight is earlier or later then the scheduled departure time
 - make components more reusable, e.g. button, form & table by passing in button wording or form title etc.
 
-## Assumptions I've made
+### Assumptions I've made
 
 - 'status' wording didn't match the design status wording. I made an assumption which colour should go with each status - in the real world I would have raised this when reviewing the data and design to clarify the colours per status.
 - Kept status wording black for improved accessibility - I would have asked if this was okay to do with the appropriate person
