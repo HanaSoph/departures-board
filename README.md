@@ -54,8 +54,7 @@ npm run lint
 
 - Table ordering:
 
-  - Sorting is applied immediately on data fetch (App.vue) to keep the API module purely responsible for returning data.
-  - Even though the data return ordered by scheduledDepartureTime, I added this sort in to cover in case the data comes back unordered.
+  - Sorting is applied immediately on data fetch (App.vue) to keep the API module purely responsible for returning data (despite the data returns ordered by scheduledDepartureTime, I added this sort in to cover in case the data comes back unordered.)
 
 - Edit Flight Status Form:
 
@@ -78,11 +77,11 @@ npm run lint
 - Loading state:
 
   - On mounted: to improve this in a future iteration it could be made more attractive e.g. blank rows with pulse animation or a blurred out table.
-  - If live data is being used to update the data, we could use WebSockets for real time updates. Would be good to isolate the loading state to the new flight, or for the updated flight only.
+  - If live data is being used to update the data, we could use WebSockets for real time updates. It would be good to isolate the loading state to the new flight, or for the updated flight only.
 
 - Order and sort:
 
-  - Coule be enhanced in a future itteration to add sorting to the table columns.
+  - Add sorting to the table columns.
 
 - Status Updates:
 
@@ -106,14 +105,10 @@ npm run lint
 - Could add an edit button next to each flight, which would reveal the Edit Status form in a modal
 - Frontend form validation to display errors
 
-#### Testing
-
-- Test to check if the error message displays
-
 #### Other
 
 - In the data, departure time was sometimes different to the status times - could add a check in for this to display something to let users know their flight is earlier or later then the scheduled departure time
-- make components more reusable, e.g. button, form & table by passing in button wording or form title etc.
+- make components more reusable, e.g. button, form & table - by passing in button wording or form title etc.
 
 ### Assumptions I've made
 
