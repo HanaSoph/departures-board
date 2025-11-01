@@ -7,7 +7,7 @@
       >
         <div class="form-group">
           <div class="form-fields-group">
-            <div class="field">
+            <div class="form-field">
               <label for="flight-select">Select flight:</label>
               <select
                 name="flight"
@@ -28,7 +28,7 @@
               </select>
             </div>
 
-            <div class="field">
+            <div class="form-field">
               <label for="status-select">Flight status:</label>
               <select name="status" id="status-select" v-model="selectedStatus">
                 <option disabled value="">Select a new status</option>
@@ -39,7 +39,7 @@
                 <option value="Other">Other</option>
               </select>
             </div>
-            <div class="field" v-if="selectedStatus === 'Other'">
+            <div class="form-field" v-if="selectedStatus === 'Other'">
               <label for="new-status">Other status:</label>
               <input
                 id="new-status"
@@ -50,7 +50,11 @@
             </div>
           </div>
           <button
-            :disabled="!selectedStatus || !selectedFlightNumber"
+            :disabled="
+              !selectedStatus ||
+              !selectedFlightNumber ||
+              (selectedStatus === 'Other' && !otherText)
+            "
             type="submit"
             class="submit"
           >
@@ -68,7 +72,7 @@ import formattedTime from "../helpers/timeHelper";
 export default {
   name: "EditForm",
   props: {
-    flightData: Object,
+    flightData: Array,
   },
   data() {
     return {
@@ -207,7 +211,7 @@ button:disabled {
           flex-direction: column;
         }
 
-        .field {
+        .form-field {
           display: flex;
           flex-direction: column;
           gap: 10px;

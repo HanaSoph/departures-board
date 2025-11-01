@@ -33,23 +33,20 @@
         </tr>
       </tbody>
     </table>
-    <EditForm :flight-data="flightData" />
   </section>
 </template>
 
 <script>
 import formattedTime from "@/helpers/timeHelper";
 import StatusTag from "./StatusTag.vue";
-import EditForm from "./EditForm.vue";
 
 export default {
   name: "FlightsTable",
   components: {
     StatusTag,
-    EditForm,
   },
   props: {
-    flightData: Object,
+    flightData: Array,
   },
   methods: {
     formattedTime,
@@ -114,6 +111,7 @@ tbody {
   overflow-y: hidden;
   overflow-x: auto;
   width: 100%;
+  max-width: 100vw;
 
   table {
     border-collapse: separate;

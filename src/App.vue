@@ -7,10 +7,11 @@
     <section v-if="errored" class="error">
       <p>We're not able to retrieve this information. Please try again later</p>
     </section>
-    <div v-else class="page-group">
+    <div v-else class="body">
       <div class="loading" v-if="loading">Loading...</div>
       <div v-else>
         <FlightsTable :flight-data="this.flights" />
+        <EditForm :flight-data="this.flights" />
       </div>
     </div>
   </div>
@@ -19,20 +20,19 @@
 <script>
 import { fetchFlights } from "./helpers/flightsApi";
 import FlightsTable from "./components/FlightsTable.vue";
+import EditForm from "./components/EditForm.vue";
 
 export default {
   name: "App",
   components: {
     FlightsTable,
+    EditForm,
   },
   data() {
     return {
       flights: null,
       loading: false,
       errored: false,
-      selectedFlightNumber: "",
-      selectedStatus: "",
-      otherText: "",
     };
   },
   methods: {
@@ -40,7 +40,13 @@ export default {
       this.loading = true;
       fetchFlights()
         .then((response) => {
-          this.flights = response.slice(0, 10);
+          this.flights = response
+            .slice(0, 10)
+            .sort(
+              (a, b) =>
+                new Date(a.scheduledDepartureDateTime) -
+                new Date(b.scheduledDepartureDateTime)
+            );
         })
         .catch((error) => {
           console.warn(error);
@@ -86,7 +92,7 @@ export default {
   padding: 40px;
 }
 
-.page-group {
+.body {
   display: flex;
   flex-direction: column;
   max-width: 900px;
