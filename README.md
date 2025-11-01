@@ -112,6 +112,6 @@ npm run lint
 
 ### Assumptions I've made
 
-- 'status' wording didn't match the design status wording. I made an assumption which colour should go with each status - in the real world I would have raised this when reviewing the data and design to clarify the colours per status.
+- 'status' wording in the data didn't match the status wording in the design exactly. I made an assumption which colour should go with each status - in the real world I would have raised this when reviewing the data and design to clarify the colours per status.
 - Kept status wording black for improved accessibility - I would have asked if this was okay to do with the appropriate person
 
