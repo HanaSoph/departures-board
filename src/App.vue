@@ -40,13 +40,11 @@ export default {
       this.loading = true;
       fetchFlights()
         .then((response) => {
-          this.flights = response
-            .slice(0, 10)
-            .sort(
-              (a, b) =>
-                new Date(a.scheduledDepartureDateTime) -
-                new Date(b.scheduledDepartureDateTime)
-            );
+          this.flights = response.sort(
+            (a, b) =>
+              new Date(a.scheduledDepartureDateTime) -
+              new Date(b.scheduledDepartureDateTime)
+          );
         })
         .catch((error) => {
           console.warn(error);
